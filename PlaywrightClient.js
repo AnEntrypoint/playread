@@ -1,7 +1,7 @@
 const { spawn } = require('child_process');
 const { createInterface } = require('readline');
 
-class SimplePlaywrightClient {
+class PlaywrightClient {
   constructor() {
     this.process = null;
     this.requestId = 1;
@@ -127,4 +127,4 @@ class SimplePlaywrightClient {
   }
 }
 
-module.exports = { SimplePlaywrightClient };
+module.exports = { PlaywrightClient };
