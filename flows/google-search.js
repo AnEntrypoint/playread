@@ -8,20 +8,19 @@ module.exports = async function(client, query) {
     // More human-like delays and interaction patterns
     await new Promise(resolve => setTimeout(resolve, 2000));
 
-    const snapshot = await client.snapshot();
+    const snapshotResult = await client.snapshot();
 
-    // Handle different snapshot formats
+    // Handle different snapshot formats from direct MCP client
     let snapshotText = '';
-    if (snapshot.content && snapshot.content[0] && snapshot.content[0].text) {
-      snapshotText = snapshot.content[0].text;
-    } else if (snapshot.text) {
-      snapshotText = snapshot.text;
-    } else if (typeof snapshot === 'string') {
-      snapshotText = snapshot;
+    if (snapshotResult.content && snapshotResult.content[0] && snapshotResult.content[0].text) {
+      snapshotText = snapshotResult.content[0].text;
+    } else if (snapshotResult.text) {
+      snapshotText = snapshotResult.text;
+    } else if (typeof snapshotResult === 'string') {
+      snapshotText = snapshotResult;
     }
 
     console.error('Snapshot text length:', snapshotText.length);
-    console.error('Snapshot preview:', snapshotText.substring(0, 200));
 
     // Try multiple patterns to find search box
     const searchPatterns = [
@@ -49,20 +48,19 @@ module.exports = async function(client, query) {
     // Simple wait for results to load
     await new Promise(resolve => setTimeout(resolve, 5000));
 
-    const results = await client.snapshot();
+    const resultsResult = await client.snapshot();
 
-    // Handle different snapshot formats for results
+    // Handle different snapshot formats for results from direct MCP client
     let resultsText = '';
-    if (results.content && results.content[0] && results.content[0].text) {
-      resultsText = results.content[0].text;
-    } else if (results.text) {
-      resultsText = results.text;
-    } else if (typeof results === 'string') {
-      resultsText = results;
+    if (resultsResult.content && resultsResult.content[0] && resultsResult.content[0].text) {
+      resultsText = resultsResult.content[0].text;
+    } else if (resultsResult.text) {
+      resultsText = resultsResult.text;
+    } else if (typeof resultsResult === 'string') {
+      resultsText = resultsResult;
     }
 
     console.error('Results snapshot length:', resultsText.length);
-    console.error('Results snapshot preview:', resultsText.substring(0, 1000));
 
     // Dynamic parsing that works with actual Playwright MCP structure
     console.error('Starting dynamic result parsing...');
