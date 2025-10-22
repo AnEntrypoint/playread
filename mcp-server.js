@@ -57,6 +57,34 @@ function getFlowSchema(flowName) {
   };
 }
 
+// Simple connection pool for better performance
+let pooledClient = null;
+let isClientInitializing = false;
+
+async function getPooledClient() {
+  if (pooledClient && !pooledClient.client.closed) {
+    return pooledClient;
+  }
+
+  if (isClientInitializing) {
+    // Wait for initialization to complete
+    while (isClientInitializing) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    return pooledClient;
+  }
+
+  isClientInitializing = true;
+  try {
+    pooledClient = new PlaywrightMCPClient();
+    await pooledClient.connect();
+    console.error('New pooled Playwright client connected');
+    return pooledClient;
+  } finally {
+    isClientInitializing = false;
+  }
+}
+
 async function executeFlow(flowName, args) {
   const flowPath = path.join(flowsDir, `${flowName}.js`);
   if (!fs.existsSync(flowPath)) {
@@ -68,7 +96,8 @@ async function executeFlow(flowName, args) {
     throw new Error(`Flow "${flowName}" must export a function`);
   }
 
-  const client = new PlaywrightMCPClient();
+  // Use pooled client for better performance
+  const client = await getPooledClient();
   let result = '';
 
   const originalLog = console.log;
@@ -77,8 +106,6 @@ async function executeFlow(flowName, args) {
   };
 
   try {
-    await client.connect();
-
     const flowArgs = [];
     if (flowName === 'fetch' && args.url) {
       flowArgs.push(args.url);
@@ -86,12 +113,20 @@ async function executeFlow(flowName, args) {
       flowArgs.push(args.query);
     }
 
-    await flow(client, ...flowArgs);
+    // Add timeout to prevent hanging
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Flow execution timeout')), 20000);
+    });
+
+    await Promise.race([
+      flow(client, ...flowArgs),
+      timeoutPromise
+    ]);
 
     return result;
   } finally {
     console.log = originalLog;
-    await client.disconnect();
+    // Don't disconnect - keep client pooled for next request
   }
 }
 
