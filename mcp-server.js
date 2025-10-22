@@ -42,7 +42,7 @@ function getFlowSchema(flowName) {
             description: 'The search query'
           }
         },
-        required: []
+        required: ['query']
       }
     }
   };

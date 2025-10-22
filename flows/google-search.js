@@ -8,7 +8,8 @@ module.exports = async function(client, query) {
     throw new Error('Could not find search box');
   }
 
-  await client.type('Search box', searchBoxMatch[1], query || 'Playwright automation testing', true);
+  const searchQuery = query || 'Playwright automation testing';
+  await client.type('Search box', searchBoxMatch[1], searchQuery, true);
 
   await client.waitFor(null, null, 30);
 
@@ -75,7 +76,7 @@ module.exports = async function(client, query) {
   }
 
   console.log(JSON.stringify({
-    query: query || 'Playwright automation testing',
+    query: searchQuery,
     totalResults: allResults.length,
     results: allResults
   }, null, 2));
