@@ -1,0 +1,39 @@
+{
+  "name": "playread",
+  "version": "1.1.1",
+  "description": "Web content extraction and automation via Playwright MCP",
+  "main": "index.js",
+  "type": "commonjs",
+  "bin": {
+    "playpen": "./cli.js"
+  },
+  "scripts": {
+    "test": "node test-fetch-comprehensive.js",
+    "test:google": "node cli.js google-search",
+    "test:fetch": "node cli.js fetch https://example.com",
+    "test:mcp": "node test-mcp-server.js",
+    "test:mcp-call": "node test-mcp-tool-call.js",
+    "mcp": "node mcp-server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4"
+  },
+  "keywords": [
+    "mcp",
+    "playwright",
+    "automation",
+    "browser",
+    "google",
+    "search",
+    "web-scraping",
+    "content-extraction",
+    "documentation",
+    "fetch"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/playpen.git"
+  },
+  "author": "",
+  "license": "MIT"
+}
