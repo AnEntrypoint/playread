@@ -85,6 +85,44 @@ module.exports = async function(client, query) {
 
   console.error('Results snapshot length:', resultsText.length);
 
+  // Check for Google reCAPTCHA / bot detection
+  if (resultsText.includes('I\'m not a robot') ||
+      resultsText.includes('reCAPTCHA') ||
+      resultsText.includes('unusual traffic') ||
+      resultsText.includes('checkbox "I\'m not a robot"') ||
+      resultsText.includes('/sorry/index')) {
+
+    console.error('Google reCAPTCHA detected - automated search blocked');
+
+    // Return informative results instead of throwing error
+    const fallbackResults = [
+      {
+        title: "Google Search Blocked by reCAPTCHA",
+        url: null,
+        description: "Automated searches are currently blocked by Google's anti-bot protection. This is a common issue with web scraping tools. Try again later or use a different search approach."
+      },
+      {
+        title: "Alternative: Use Search APIs",
+        url: "https://developers.google.com/custom-search/v1/introduction",
+        description: "Consider using Google's Custom Search API for reliable programmatic access to search results."
+      },
+      {
+        title: "Alternative: DuckDuckGo",
+        url: "https://duckduckgo.com/",
+        description: "DuckDuckGo is generally more permissive of automated searches and provides similar functionality."
+      }
+    ];
+
+    console.log(JSON.stringify({
+      query: searchQuery,
+      totalResults: fallbackResults.length,
+      results: fallbackResults,
+      warning: "Google reCAPTCHA detected - automated search blocked"
+    }, null, 2));
+
+    return;
+  }
+
   const allResults = [];
   const lines = resultsText.split('\n');
   let inDescriptionSection = false;
