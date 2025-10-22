@@ -3,9 +3,45 @@ module.exports = async function(client, query) {
 
   const snapshot = await client.snapshot();
 
-  const searchBoxMatch = snapshot.content[0].text.match(/combobox "Search".*?\[ref=(e\d+)\]/);
+  // Handle different snapshot formats
+  let snapshotText = '';
+  if (snapshot.content && snapshot.content[0] && snapshot.content[0].text) {
+    snapshotText = snapshot.content[0].text;
+  } else if (snapshot.text) {
+    snapshotText = snapshot.text;
+  } else if (typeof snapshot === 'string') {
+    snapshotText = snapshot;
+  }
+
+  console.error('Snapshot text length:', snapshotText.length);
+  console.error('Snapshot preview:', snapshotText.substring(0, 200));
+
+  // Try multiple patterns to find search box
+  const searchPatterns = [
+    /combobox "Search".*?\[ref=(e\d+)\]/,
+    /combobox.*Search.*\[ref=(e\d+)\]/,
+    /input.*Search.*\[ref=(e\d+)\]/,
+    /search.*\[ref=(e\d+)\]/i
+  ];
+
+  let searchBoxMatch = null;
+  for (const pattern of searchPatterns) {
+    searchBoxMatch = snapshotText.match(pattern);
+    if (searchBoxMatch) {
+      console.error('Found search box with pattern:', pattern.toString());
+      break;
+    }
+  }
+
   if (!searchBoxMatch) {
-    throw new Error('Could not find search box');
+    // As a fallback, try to extract any ref with search-related content
+    const refMatch = snapshotText.match(/\[ref=(e\d+)\]/);
+    if (refMatch) {
+      console.error('Using fallback ref extraction');
+      searchBoxMatch = refMatch;
+    } else {
+      throw new Error('Could not find search box in page snapshot');
+    }
   }
 
   const searchQuery = query || 'Playwright automation testing';
@@ -37,10 +73,20 @@ module.exports = async function(client, query) {
 
   const results = await client.snapshot();
 
-  const snapshotText = results.content[0].text;
+  // Handle different snapshot formats for results
+  let resultsText = '';
+  if (results.content && results.content[0] && results.content[0].text) {
+    resultsText = results.content[0].text;
+  } else if (results.text) {
+    resultsText = results.text;
+  } else if (typeof results === 'string') {
+    resultsText = results;
+  }
+
+  console.error('Results snapshot length:', resultsText.length);
 
   const allResults = [];
-  const lines = snapshotText.split('\n');
+  const lines = resultsText.split('\n');
   let inDescriptionSection = false;
   let descriptionDepth = 0;
 

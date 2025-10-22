@@ -115,7 +115,7 @@ async function executeFlow(flowName, args) {
 
     // Add timeout to prevent hanging
     const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('Flow execution timeout')), 20000);
+      setTimeout(() => reject(new Error('Flow execution timeout')), 30000);
     });
 
     await Promise.race([
