@@ -1,27 +1,27 @@
-# playpen
+# playread
 
 Google search automation via Playwright MCP. Can be used as a CLI tool or as an MCP server.
 
 ## Installation
 
 ```bash
-npm install -g playpen
+npm install -g playread
 ```
 
 Or use directly with npx:
 
 ```bash
-npx -y playpen@latest google-search
+npx -y playread@latest google-search
 ```
 
 ## Usage
 
 ### As an MCP Server
 
-Start playpen as an MCP server to expose all flows as tools:
+Start playread as an MCP server to expose all flows as tools:
 
 ```bash
-playpen mcp
+playread mcp
 ```
 
 Or configure in your MCP client settings (e.g., Claude Desktop):
@@ -29,9 +29,9 @@ Or configure in your MCP client settings (e.g., Claude Desktop):
 ```json
 {
   "mcpServers": {
-    "playpen": {
+    "playread": {
       "command": "npx",
-      "args": ["-y", "playpen@latest", "mcp"]
+      "args": ["-y", "playread@latest", "mcp"]
     }
   }
 }
@@ -45,7 +45,7 @@ Available MCP tools:
 
 ### Google Search
 ```bash
-playpen google-search
+playread google-search
 ```
 
 Output format:
@@ -67,7 +67,7 @@ Output format:
 Extract important text content from any URL:
 
 ```bash
-playpen fetch https://example.com
+playread fetch https://example.com
 ```
 
 Output format:
