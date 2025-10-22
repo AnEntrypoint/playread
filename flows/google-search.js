@@ -1,4 +1,4 @@
-module.exports = async function(client) {
+module.exports = async function(client, query) {
   await client.navigate('https://www.google.com');
 
   const snapshot = await client.snapshot();
@@ -8,7 +8,7 @@ module.exports = async function(client) {
     throw new Error('Could not find search box');
   }
 
-  await client.type('Search box', searchBoxMatch[1], 'Playwright automation testing', true);
+  await client.type('Search box', searchBoxMatch[1], query || 'Playwright automation testing', true);
 
   await client.waitFor(null, null, 30);
 
@@ -75,7 +75,7 @@ module.exports = async function(client) {
   }
 
   console.log(JSON.stringify({
-    query: 'Playwright automation testing',
+    query: query || 'Playwright automation testing',
     totalResults: allResults.length,
     results: allResults
   }, null, 2));
