@@ -117,7 +117,7 @@ async function executeFlow(flowName, args) {
 
 const server = new Server(
   {
-    name: 'playpen-mcp-server',
+    name: 'playread-mcp-server',
     version: '1.0.0'
   },
   {

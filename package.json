@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "commonjs",
   "bin": {
-    "playpen": "./cli.js"
+    "playread": "./cli.js"
   },
   "scripts": {
     "test": "node test-fetch-comprehensive.js",
@@ -32,7 +32,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/playpen.git"
+    "url": "https://github.com/AnEntrypoint/playread.git"
   },
   "author": "",
   "license": "MIT"

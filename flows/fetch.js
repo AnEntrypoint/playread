@@ -1,6 +1,6 @@
 module.exports = async function(client, url) {
   if (!url) {
-    throw new Error('URL is required. Usage: playpen fetch <url>');
+    throw new Error('URL is required. Usage: playread fetch <url>');
   }
 
   await client.navigate(url);

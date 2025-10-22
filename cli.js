@@ -50,10 +50,10 @@ async function main() {
   const args = process.argv.slice(2);
 
   if (args.length === 0 || args[0] === '--help' || args[0] === '-h') {
-    console.log('playpen - Run Playwright MCP flows programmatically\n');
+    console.log('playread - Run Playwright MCP flows programmatically\n');
     console.log('Usage:');
-    console.log('  npx playpen <flow-name> [args...]  - Run a flow directly');
-    console.log('  npx playpen mcp                    - Start as MCP server\n');
+    console.log('  npx playread <flow-name> [args...]  - Run a flow directly');
+    console.log('  npx playread mcp                    - Start as MCP server\n');
     console.log('Available flows:');
 
     const flowsDir = path.join(__dirname, 'flows');
