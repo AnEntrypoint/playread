@@ -5,7 +5,7 @@ const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio
 const { CallToolRequestSchema, ListToolsRequestSchema } = require('@modelcontextprotocol/sdk/types.js');
 const fs = require('fs');
 const path = require('path');
-const { SimplePlaywrightClient } = require('./SimplePlaywrightClient.js');
+const { PlaywrightClient } = require('./PlaywrightClient.js');
 
 const flowsDir = path.join(__dirname, 'flows');
 
@@ -59,9 +59,9 @@ function getFlowSchema(flowName) {
 
 // Create fresh client for each request to avoid bot detection
 async function getFreshClient() {
-  const client = new SimplePlaywrightClient();
+  const client = new PlaywrightClient();
   await client.connect();
-  console.error('New fresh Simple Playwright client connected');
+  console.error('New fresh Playwright client connected');
   return client;
 }
 
