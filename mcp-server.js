@@ -5,7 +5,7 @@ const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio
 const { CallToolRequestSchema, ListToolsRequestSchema } = require('@modelcontextprotocol/sdk/types.js');
 const fs = require('fs');
 const path = require('path');
-const { PlaywrightMCPClient } = require('./index.js');
+const { SimplePlaywrightClient } = require('./SimplePlaywrightClient.js');
 
 const flowsDir = path.join(__dirname, 'flows');
 
@@ -57,32 +57,12 @@ function getFlowSchema(flowName) {
   };
 }
 
-// Simple connection pool for better performance
-let pooledClient = null;
-let isClientInitializing = false;
-
-async function getPooledClient() {
-  if (pooledClient && !pooledClient.client.closed) {
-    return pooledClient;
-  }
-
-  if (isClientInitializing) {
-    // Wait for initialization to complete
-    while (isClientInitializing) {
-      await new Promise(resolve => setTimeout(resolve, 100));
-    }
-    return pooledClient;
-  }
-
-  isClientInitializing = true;
-  try {
-    pooledClient = new PlaywrightMCPClient();
-    await pooledClient.connect();
-    console.error('New pooled Playwright client connected');
-    return pooledClient;
-  } finally {
-    isClientInitializing = false;
-  }
+// Create fresh client for each request to avoid bot detection
+async function getFreshClient() {
+  const client = new SimplePlaywrightClient();
+  await client.connect();
+  console.error('New fresh Simple Playwright client connected');
+  return client;
 }
 
 async function executeFlow(flowName, args) {
@@ -96,8 +76,8 @@ async function executeFlow(flowName, args) {
     throw new Error(`Flow "${flowName}" must export a function`);
   }
 
-  // Use pooled client for better performance
-  const client = await getPooledClient();
+  // Use fresh client to avoid bot detection
+  const client = await getFreshClient();
   let result = '';
 
   const originalLog = console.log;
@@ -126,7 +106,12 @@ async function executeFlow(flowName, args) {
     return result;
   } finally {
     console.log = originalLog;
-    // Don't disconnect - keep client pooled for next request
+    // Close the client to clean up resources
+    try {
+      await client.close();
+    } catch (error) {
+      console.error('Error closing client:', error.message);
+    }
   }
 }
 
