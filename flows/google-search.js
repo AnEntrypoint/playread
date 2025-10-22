@@ -11,7 +11,29 @@ module.exports = async function(client, query) {
   const searchQuery = query || 'Playwright automation testing';
   await client.type('Search box', searchBoxMatch[1], searchQuery, true);
 
-  await client.waitFor(null, null, 30);
+  // Wait for results with intelligent polling instead of fixed 30s wait
+    let attempts = 0;
+    let resultsFound = false;
+
+    while (attempts < 10 && !resultsFound) {
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
+      attempts++;
+
+      try {
+        const checkSnapshot = await client.snapshot();
+        const text = checkSnapshot.content[0].text;
+
+        // Check if search results have loaded
+        if (text.includes('About ') && text.includes(' results') ||
+            text.includes('Web results') ||
+            text.match(/\d+,\d+,\d+/)) {
+          resultsFound = true;
+          break;
+        }
+      } catch (error) {
+        console.error(`Error checking for results on attempt ${attempts}: ${error.message}`);
+      }
+    }
 
   const results = await client.snapshot();
 
