@@ -27,7 +27,8 @@ RUN export PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright && \
 EXPOSE 3000
 
 ENV PORT=3000 \
-    NODE_ENV=production
+    NODE_ENV=production \
+    PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/opt/google/chrome/chrome
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD node -e "require('http').get('http://localhost:3000/health', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
