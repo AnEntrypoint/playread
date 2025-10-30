@@ -21,5 +21,3 @@ nixpkgsVersion = "unstable"
 
 [env]
 PORT = "8080"
-PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "0"
-DISPLAY = ":99"
