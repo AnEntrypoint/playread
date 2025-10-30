@@ -1,5 +1,5 @@
 {
-  "buildPack": "nixpacks",
+  "buildPack": "dockerfile",
   "ports": [
     {
       "published": 3000,

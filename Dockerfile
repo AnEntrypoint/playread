@@ -25,7 +25,8 @@ EXPOSE 3000
 
 ENV PORT=3000 \
     NODE_ENV=production \
-    PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=0
+    PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=0 \
+    PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium-browser
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD node -e "require('http').get('http://localhost:3000/health', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
