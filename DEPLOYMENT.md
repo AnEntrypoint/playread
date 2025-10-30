@@ -25,24 +25,35 @@ docker run -d -p 3000:3000 \
   playread:latest
 ```
 
-## Coolify Deployment
+## Coolify Deployment (RECOMMENDED)
 
 ### Prerequisites
 - Coolify 4.0.0 or later
 - Repository connected: `github.com/AnEntrypoint/playread`
-- Dockerfile in repository (already included)
 
-### Standard Deployment
+### Standard Deployment with Nixpacks (Recommended)
 1. In Coolify Dashboard, select your application
-2. Set Build Pack to **"Dockerfile"**
+2. Set Build Pack to **"Nixpacks"** (Coolify will auto-detect from .coolify.json)
 3. Set Port to **3000**
-4. Environment Variables:
+4. Environment Variables (optional, defaults are in .coolify.json):
    ```
    PORT=3000
    NODE_ENV=production
    PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=0
    ```
 5. Deploy
+
+**Why Nixpacks?**
+- Avoids Docker permission issues that occur with Dockerfile builds
+- Automatically handles all system dependencies for Playwright
+- Uses nixpacks.toml configuration already in repository
+- Better isolation and cleaner builds
+
+### Alternative: Dockerfile Deployment
+If you prefer Docker builds:
+1. Set Build Pack to **"Dockerfile"**
+2. You may encounter permission issues if Coolify service lacks write access
+3. See troubleshooting section below
 
 ### Troubleshooting Permission Errors
 
