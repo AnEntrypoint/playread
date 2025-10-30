@@ -57,16 +57,34 @@ If you prefer Docker builds:
 
 ### Troubleshooting Permission Errors
 
-If you see: `Permission denied` on `.env` or `docker-compose.yaml`
+If you see: `tee: /data/coolify/applications/___/.env: Permission denied`
 
-**Solution 1: Fix Host Permissions (SSH into Coolify host)**
+This is a **known Coolify bug** (Issue #5199) when running with a non-root user.
+
+**Solution 1: Fix /data/coolify permissions (RECOMMENDED)**
+```bash
+# SSH into your Coolify host and run:
+sudo chmod -R 775 /data/coolify
+```
+
+Then redeploy from Coolify Dashboard.
+
+**Solution 2: Alternative permission fix**
+```bash
+coolify_user="coolify"
+sudo chown -R 9999:$coolify_user /data/coolify
+sudo chmod -R 750 /data/coolify
+sudo chmod -R 700 /data/coolify/ssh
+```
+
+**Solution 3: Fix specific application directory**
 ```bash
 cd /data/coolify/applications/YOUR_APP_ID
 sudo chown -R coolify:coolify .
 sudo chmod -R 755 .
 ```
 
-**Solution 2: Use provided script**
+**Solution 4: Use provided automated script**
 ```bash
 # On Coolify host
 curl -O https://raw.githubusercontent.com/AnEntrypoint/playread/main/deploy.sh
@@ -74,11 +92,11 @@ chmod +x deploy.sh
 sudo ./deploy.sh /data/coolify/applications/YOUR_APP_ID
 ```
 
-**Solution 3: Coolify Settings Fix**
+**Solution 5: Coolify Settings Fix (Nuclear Option)**
 1. Stop the application
 2. Remove the application directory via Coolify UI
 3. Reconnect repository
-4. Re-deploy
+4. Re-deploy (directory will be created fresh)
 
 ### Health Check
 Once deployed, verify with:
