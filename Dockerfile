@@ -15,9 +15,9 @@ COPY . .
 ENV PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright
 
 RUN npx -y playwright install chrome --with-deps && \
-    mkdir -p /opt/google/chrome && \
-    CHROME_PATH=$(find /root/.cache/ms-playwright -name "chrome" -type f -executable | head -1) && \
-    ln -sf "$CHROME_PATH" /opt/google/chrome/chrome && \
+    CHROME_DIR=$(find /root/.cache/ms-playwright -name "chrome-linux" -type d | head -1) && \
+    mkdir -p /opt/google && \
+    cp -r "$CHROME_DIR" /opt/google/chrome && \
     ls -la /opt/google/chrome/chrome
 
 EXPOSE 3000
