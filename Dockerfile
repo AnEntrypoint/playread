@@ -12,14 +12,15 @@ RUN npm ci --only=production
 
 COPY . .
 
-RUN npx -y playwright install chromium --with-deps
+ENV PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright
+
+RUN npx -y playwright install chrome --with-deps
 
 EXPOSE 3000
 
 ENV PORT=3000 \
     NODE_ENV=production \
-    PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
-    PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright
+    PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD node -e "require('http').get('http://localhost:3000/health', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
