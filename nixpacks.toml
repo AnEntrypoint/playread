@@ -7,6 +7,7 @@ cmd = "npm run http"
 [nix]
 pkgs = [
   "nodejs_22",
+  "npm",
   "chromium",
   "libxkbcommon",
   "libxss",
@@ -14,10 +15,13 @@ pkgs = [
   "libgconf-2-4",
   "libnotify",
   "libnss3",
-  "libgbm"
+  "libgbm",
+  "libdrm",
+  "mesa"
 ]
 
 nixpkgsVersion = "unstable"
 
 [env]
-PORT = "8080"
+PORT = "3000"
+PLAYWRIGHT_HEADLESS = "true"
