@@ -1,15 +1,7 @@
 FROM node:22-slim
-# Force rebuild without cache - Chrome installation required
 
 RUN apt-get update && apt-get install -y \
-    wget \
-    gnupg \
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable \
-    && mkdir -p /opt/google/chrome \
-    && ln -sf /usr/bin/google-chrome-stable /opt/google/chrome/chrome \
+    chromium-browser \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -20,17 +12,13 @@ RUN npm ci --only=production
 
 COPY . .
 
-RUN npx -y playwright install chrome --with-deps && \
-    npx -y @playwright/mcp@latest --help || true && \
-    which google-chrome-stable && \
-    ls -la /opt/google/chrome/chrome && \
-    google-chrome-stable --version || echo "Chrome check failed"
+RUN npx -y playwright install chromium --with-deps
 
 EXPOSE 3000
 
 ENV PORT=3000 \
     NODE_ENV=production \
-    PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=0 \
+    PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
     PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
