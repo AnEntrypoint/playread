@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## v1.2.1 - Headless Playwright & Nixpacks Optimization
+- Configured Playwright to run in headless mode (PLAYWRIGHT_HEADLESS=true)
+- Updated nixpacks.toml with explicit Nix packages (chromium, libdrm, mesa, etc)
+- Removed display-based configuration (DISPLAY) in favor of headless mode
+- Added explicit npm package to Nix dependencies
+- Changed port from 8080 to 3000 for consistency
+- Verified HTTP MCP server works correctly with Streamable HTTP transport
+- Cleaned up orphaned test files (test.json)
+- Updated documentation in CLAUDE.md
+
 ## v1.2.0 - HTTP/Streamable HTTP Support
 - Added http-server.js with Streamable HTTP transport for remote access
 - Implemented McpServer with dynamic flow-based tools registration
