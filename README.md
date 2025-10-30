@@ -103,6 +103,8 @@ docker run -p 3000:3000 playread:latest
 
 The Dockerfile includes all required system dependencies for Playwright browser automation with Chromium.
 
+**See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed troubleshooting and configuration guides.**
+
 ### As a CLI Tool
 
 ### Google Search

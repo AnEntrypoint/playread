@@ -1,0 +1,23 @@
+{
+  "buildPack": "dockerfile",
+  "ports": [
+    {
+      "published": 3000,
+      "target": 3000
+    }
+  ],
+  "healthCheck": {
+    "type": "HTTP",
+    "path": "/health",
+    "port": 3000,
+    "interval": 30,
+    "timeout": 10,
+    "retries": 3,
+    "startPeriod": 5
+  },
+  "environment": {
+    "PORT": "3000",
+    "NODE_ENV": "production",
+    "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": "0"
+  }
+}
