@@ -137,14 +137,14 @@ module.exports = async function(client, url) {
     };
   }`);
 
-  const text = result.content[0].text;
-  const jsonMatch = text.match(/### Result\n(\{[\s\S]*?\})\n/);
+  const response = result.content[0].text;
+  let data;
 
-  if (!jsonMatch) {
-    throw new Error('Could not extract result from page evaluation');
+  try {
+    data = JSON.parse(response);
+  } catch (e) {
+    throw new Error(`Failed to parse evaluation result: ${response}`);
   }
-
-  const data = JSON.parse(jsonMatch[1]);
 
   await client.close();
 
