@@ -5,8 +5,7 @@
   "main": "index.js",
   "type": "commonjs",
   "bin": {
-    "playpen": "./cli.js",
-    "playpen-mcp": "./mcp-server.js"
+    "playread": "./cli.js"
   },
   "scripts": {
     "start": "node cli.js",
