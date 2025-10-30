@@ -12,8 +12,13 @@ RUN npm ci --only=production
 
 COPY . .
 
-RUN npx -y playwright install chrome --with-deps && \
+RUN export PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright && \
+    npx -y playwright install chrome --with-deps && \
+    echo "Searching for chrome-linux directory..." && \
+    find /root/.cache/ms-playwright -type d -name "chrome-linux" && \
     CHROME_DIR=$(find /root/.cache/ms-playwright -name "chrome-linux" -type d | head -1) && \
+    echo "Found CHROME_DIR: $CHROME_DIR" && \
+    test -n "$CHROME_DIR" || (echo "ERROR: chrome-linux not found" && exit 1) && \
     mkdir -p /opt/google && \
     cp -r "$CHROME_DIR" /opt/google/chrome && \
     ls -la /opt/google/chrome/chrome && \
