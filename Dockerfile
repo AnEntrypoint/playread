@@ -15,10 +15,12 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm ci --only=production && \
-    npx playwright install chrome --with-deps
+RUN npm ci --only=production
 
 COPY . .
+
+RUN npx -y playwright install chrome --with-deps && \
+    npx -y @playwright/mcp@latest --help || true
 
 EXPOSE 3000
 
