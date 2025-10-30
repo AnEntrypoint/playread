@@ -13,12 +13,8 @@ class PlaywrightMCPClient {
 
     const chromiumPath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || process.env.CHROMIUM_BIN;
     if (chromiumPath) {
-      console.log(`[PlaywrightMCPClient] Using chrome at: ${chromiumPath}`);
       env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH = chromiumPath;
       args.push('--executable-path', chromiumPath);
-      console.log(`[PlaywrightMCPClient] npx args:`, args);
-    } else {
-      console.log('[PlaywrightMCPClient] No PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH or CHROMIUM_BIN set');
     }
 
     this.transport = new StdioClientTransport({
