@@ -1,4 +1,5 @@
 FROM node:22-slim
+# Force rebuild without cache - Chrome installation required
 
 RUN apt-get update && apt-get install -y \
     wget \
