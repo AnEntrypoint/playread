@@ -10,13 +10,17 @@
   "scripts": {
     "start": "node cli.js",
     "mcp": "node mcp-server.js",
+    "http": "node http-server.js",
     "test:google": "node cli.js google-search",
     "test:fetch": "node cli.js fetch https://example.com",
     "test:mcp": "node cli.js mcp"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.4",
-    "@playwright/mcp": "^0.0.44"
+    "@playwright/mcp": "^0.0.44",
+    "cors": "^2.8.5",
+    "express": "^5.0.0",
+    "zod": "^3.22.4"
   },
   "keywords": [
     "mcp",

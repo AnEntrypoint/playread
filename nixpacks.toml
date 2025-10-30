@@ -1,0 +1,25 @@
+[build]
+cmd = "npm install"
+
+[start]
+cmd = "npm run http"
+
+[nix]
+pkgs = [
+  "nodejs_22",
+  "chromium",
+  "libxkbcommon",
+  "libxss",
+  "libappindicator-gtk3",
+  "libgconf-2-4",
+  "libnotify",
+  "libnss3",
+  "libgbm"
+]
+
+nixpkgsVersion = "unstable"
+
+[env]
+PORT = "8080"
+PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "0"
+DISPLAY = ":99"

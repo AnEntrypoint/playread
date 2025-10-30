@@ -16,9 +16,9 @@ npx -y playpen@latest google-search
 
 ## Usage
 
-### As an MCP Server
+### As an MCP Server (Stdio)
 
-Start playpen as an MCP server to expose all flows as tools:
+Start playpen as a stdio MCP server to expose all flows as tools:
 
 ```bash
 playpen mcp
@@ -40,6 +40,52 @@ Or configure in your MCP client settings (e.g., Claude Desktop):
 Available MCP tools:
 - `fetch` - Fetch and extract main content from a web page URL
 - `google-search` - Perform a Google search and extract results
+
+### As an HTTP MCP Server (Remote Access)
+
+For remote client access over HTTP, start the HTTP server:
+
+```bash
+npm run http
+# or
+node http-server.js
+```
+
+The server listens on `http://localhost:3000` (configurable via `PORT` env var).
+
+**Endpoints:**
+- `POST /mcp` - MCP protocol endpoint (Streamable HTTP transport)
+- `GET /health` - Health check endpoint
+
+**Client Configuration:**
+
+For an MCP client to connect remotely via HTTP:
+
+```json
+{
+  "mcpServers": {
+    "playread-http": {
+      "url": "http://localhost:3000/mcp"
+    }
+  }
+}
+```
+
+Or via environment variable:
+```bash
+PORT=8080 npm run http
+```
+
+**Deployment:**
+
+Deploy with Nixpacks for containerized hosting:
+
+```bash
+# Builds with all dependencies including Playwright and Chromium
+nixpacks build .
+```
+
+The `nixpacks.toml` includes all required system dependencies for Playwright browser automation.
 
 ### As a CLI Tool
 
