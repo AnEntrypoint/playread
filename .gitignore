@@ -5,3 +5,7 @@ node_modules/
 test-screenshot.png
 .vexify.db
 package-lock.json
+.env.local
+.env.*.local
+.env.production
+.env.development
