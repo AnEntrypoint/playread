@@ -78,14 +78,30 @@ PORT=8080 npm run http
 
 **Deployment:**
 
-Deploy with Nixpacks for containerized hosting:
+**Option 1: Docker Compose (Local & Production)**
+```bash
+docker-compose up -d
+# Visit http://localhost:3000/health to verify
+```
 
+**Option 2: Nixpacks (Cloud Deployment)**
 ```bash
 # Builds with all dependencies including Playwright and Chromium
 nixpacks build .
 ```
 
-The `nixpacks.toml` includes all required system dependencies for Playwright browser automation.
+**Option 3: Coolify**
+- Connect your GitHub repository (AnEntrypoint/playread)
+- Set PORT=3000 in environment variables
+- Coolify will automatically use the Dockerfile for deployment
+
+**Option 4: Docker Build Directly**
+```bash
+docker build -t playread:latest .
+docker run -p 3000:3000 playread:latest
+```
+
+The Dockerfile includes all required system dependencies for Playwright browser automation with Chromium.
 
 ### As a CLI Tool
 
