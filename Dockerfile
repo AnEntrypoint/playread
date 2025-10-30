@@ -20,7 +20,10 @@ RUN npm ci --only=production
 COPY . .
 
 RUN npx -y playwright install chrome --with-deps && \
-    npx -y @playwright/mcp@latest --help || true
+    npx -y @playwright/mcp@latest --help || true && \
+    which google-chrome-stable && \
+    ls -la /opt/google/chrome/chrome && \
+    google-chrome-stable --version || echo "Chrome check failed"
 
 EXPOSE 3000
 
