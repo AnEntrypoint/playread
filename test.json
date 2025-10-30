@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "playread": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "playread@latest",
+	"mcp"
+      ],
+      "env": {}
+    }
+  }
+}
