@@ -11,10 +11,9 @@ class PlaywrightMCPClient {
     const args = ['-y', '@playwright/mcp@latest'];
     const env = { ...process.env };
 
-    if (process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH) {
-      env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
-    } else if (process.env.CHROMIUM_BIN) {
-      env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH = process.env.CHROMIUM_BIN;
+    const chromiumPath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || process.env.CHROMIUM_BIN;
+    if (chromiumPath) {
+      env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH = chromiumPath;
     }
 
     this.transport = new StdioClientTransport({
