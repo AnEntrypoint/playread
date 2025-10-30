@@ -8,10 +8,18 @@ class PlaywrightMCPClient {
   }
 
   async connect() {
+    const args = ['-y', '@playwright/mcp@latest'];
+    const env = {};
+
+    if (process.env.CHROMIUM_BIN) {
+      env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH = process.env.CHROMIUM_BIN;
+    }
+
     this.transport = new StdioClientTransport({
       command: 'npx',
-      args: ['-y', '@playwright/mcp@latest'],
-      stderr: 'inherit'
+      args,
+      stderr: 'inherit',
+      env: { ...process.env, ...env }
     });
 
     this.client = new Client({
