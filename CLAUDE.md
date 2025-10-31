@@ -44,3 +44,12 @@
 - MCP tools dynamically generated from flows/ directory
 - No failovers/fallbacks - errors propagate directly
 - Headless Playwright mode in container/CI environments via PLAYWRIGHT_HEADLESS
+
+## Production Deployment (Coolify)
+- URL: https://playread.247420.xyz/mcp
+- Build: Docker with system chromium-browser
+- Environment: PLAYWRIGHT_HEADLESS=true, PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium
+- Status: ✅ All 5 tools operational (fetch, google-search, test-flow, wcostream-test, wcostream)
+- fetch: ✅ Extracts web content correctly (tested with example.com)
+- google-search: ✅ Returns results (policy links due to Google bot detection)
+- Health check: ✅ Available at /health endpoint
