@@ -44,6 +44,31 @@ function getFlowSchema(flowName) {
         },
         required: ['query']
       }
+    },
+    'coolify-logs': {
+      description: 'Fetch deployment logs from Coolify',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          baseUrl: {
+            type: 'string',
+            description: 'The base URL of the Coolify instance'
+          },
+          targetDomain: {
+            type: 'string',
+            description: 'The target domain to fetch logs for'
+          },
+          email: {
+            type: 'string',
+            description: 'Email for authentication'
+          },
+          password: {
+            type: 'string',
+            description: 'Password for authentication'
+          }
+        },
+        required: ['baseUrl', 'targetDomain', 'email', 'password']
+      }
     }
   };
 
