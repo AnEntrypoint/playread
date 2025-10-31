@@ -1,5 +1,5 @@
 [build]
-cmd = "npm install && npx playwright install chromium"
+cmd = "npm install && npx playwright install --with-deps chromium"
 
 [start]
 cmd = "npm run http"
