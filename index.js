@@ -9,7 +9,7 @@ class PlaywrightMCPClient {
 
   async connect() {
     const { execSync } = require('child_process');
-    const args = ['-y', '@playwright/mcp@latest', '--browser', 'chromium', '--no-sandbox'];
+    const args = ['-y', '@playwright/mcp@latest', '--no-sandbox'];
     const env = { ...process.env };
 
     let chromiumPath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || process.env.CHROMIUM_BIN;
@@ -23,6 +23,8 @@ class PlaywrightMCPClient {
     if (chromiumPath) {
       env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH = chromiumPath;
       args.push('--executable-path', chromiumPath);
+    } else {
+      throw new Error('Chromium executable not found. Set PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH or CHROMIUM_BIN');
     }
 
     this.transport = new StdioClientTransport({
