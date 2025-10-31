@@ -82,7 +82,7 @@ function getFlowSchema(flowName) {
   };
 }
 
-async function executeFlow(flowName, args) {
+async function executeFlow(flowName, args, sessionId = null) {
   const flowPath = path.join(flowsDir, `${flowName}.js`);
   if (!fs.existsSync(flowPath)) {
     throw new Error(`Flow "${flowName}" not found`);
@@ -93,13 +93,15 @@ async function executeFlow(flowName, args) {
     throw new Error(`Flow "${flowName}" must export a function`);
   }
 
-  const client = new PlaywrightMCPClient();
+  const client = new PlaywrightMCPClient(sessionId);
 
   try {
     await client.connect();
     const flowArgs = Object.values(args);
     const result = await flow(client, ...flowArgs);
     return result;
+  } catch (error) {
+    throw new Error(`Flow execution failed: ${error.message}`);
   } finally {
     await client.disconnect();
   }
@@ -133,9 +135,10 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name, arguments: args } = request.params;
+  const sessionId = args?._sessionId || null;
 
   try {
-    const result = await executeFlow(name, args || {});
+    const result = await executeFlow(name, args || {}, sessionId);
     return {
       content: [
         {

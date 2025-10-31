@@ -1,41 +1,66 @@
 const { Client } = require('@modelcontextprotocol/sdk/client/index.js');
 const { StdioClientTransport } = require('@modelcontextprotocol/sdk/client/stdio.js');
+const crypto = require('crypto');
 
 class PlaywrightMCPClient {
-  constructor() {
+  constructor(sessionId = null) {
     this.client = null;
     this.transport = null;
+    this.sessionId = sessionId || crypto.randomBytes(8).toString('hex');
+    this.connected = false;
+    this.connectPromise = null;
+    this.operationLocks = [];
   }
 
   async connect() {
-    const path = require('path');
-    const playwrightMcpPath = path.join(require.resolve('@playwright/mcp'), '..', 'cli.js');
-    const args = ['--browser', 'chromium', '--no-sandbox'];
-    const env = { ...process.env };
-
-    const chromiumPath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || process.env.CHROMIUM_BIN;
-    if (chromiumPath) {
-      env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH = chromiumPath;
-      args.push('--executable-path', chromiumPath);
+    if (this.connected) {
+      throw new Error(`Session ${this.sessionId} is already connected`);
     }
 
-    this.transport = new StdioClientTransport({
-      command: 'node',
-      args: [playwrightMcpPath, ...args],
-      stderr: 'inherit',
-      env
-    });
+    if (this.connectPromise) {
+      return this.connectPromise;
+    }
 
-    this.client = new Client({
-      name: 'playwright-mcp-client',
-      version: '1.0.0'
-    }, {
-      capabilities: {}
-    });
+    this.connectPromise = this._performConnect();
+    return this.connectPromise;
+  }
 
-    await this.client.connect(this.transport);
+  async _performConnect() {
+    try {
+      const path = require('path');
+      const playwrightMcpPath = path.join(require.resolve('@playwright/mcp'), '..', 'cli.js');
+      const args = ['--browser', 'chromium', '--no-sandbox'];
+      const env = { ...process.env };
 
-    return this;
+      const chromiumPath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || process.env.CHROMIUM_BIN;
+      if (chromiumPath) {
+        env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH = chromiumPath;
+        args.push('--executable-path', chromiumPath);
+      }
+
+      this.transport = new StdioClientTransport({
+        command: 'node',
+        args: [playwrightMcpPath, ...args],
+        stderr: 'inherit',
+        env
+      });
+
+      this.client = new Client({
+        name: `playwright-mcp-client-${this.sessionId}`,
+        version: '1.0.0'
+      }, {
+        capabilities: {}
+      });
+
+      await this.client.connect(this.transport);
+      this.connected = true;
+
+      return this;
+    } catch (error) {
+      this.connectPromise = null;
+      this.connected = false;
+      throw error;
+    }
   }
 
   async listTools() {
@@ -44,11 +69,19 @@ class PlaywrightMCPClient {
   }
 
   async callTool(name, args = {}) {
-    const response = await this.client.callTool({
-      name,
-      arguments: args
-    });
-    return response;
+    if (!this.connected) {
+      throw new Error(`Session ${this.sessionId} is not connected. Call connect() first.`);
+    }
+
+    try {
+      const response = await this.client.callTool({
+        name,
+        arguments: args
+      });
+      return response;
+    } catch (error) {
+      throw new Error(`Tool call ${name} failed in session ${this.sessionId}: ${error.message}`);
+    }
   }
 
   async navigate(url) {
@@ -153,12 +186,28 @@ class PlaywrightMCPClient {
   }
 
   async disconnect() {
-    if (this.client) {
-      await this.client.close();
+    try {
+      if (this.client) {
+        await this.client.close();
+      }
+      if (this.transport) {
+        await this.transport.close();
+      }
+    } finally {
+      this.connected = false;
+      this.client = null;
+      this.transport = null;
+      this.connectPromise = null;
     }
-    if (this.transport) {
-      await this.transport.close();
-    }
+  }
+
+  getSessionInfo() {
+    return {
+      sessionId: this.sessionId,
+      connected: this.connected,
+      hasClient: !!this.client,
+      hasTransport: !!this.transport
+    };
   }
 }
 
