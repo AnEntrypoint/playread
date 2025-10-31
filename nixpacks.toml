@@ -1,8 +1,8 @@
 [build]
-cmd = "npm install && npx playwright install --with-deps chromium"
+cmd = "npm install"
 
 [start]
-cmd = "npm run http"
+cmd = "npx playwright install --with-deps chromium && npm run http"
 
 [nix]
 pkgs = ["nodejs_22", "npm"]
