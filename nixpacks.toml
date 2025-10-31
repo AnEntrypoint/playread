@@ -1,11 +1,11 @@
 [build]
-cmd = "npm install"
+cmd = "npm install && npx playwright install chromium"
 
 [start]
 cmd = "npm run http"
 
 [nix]
-pkgs = ["nodejs_22", "npm", "chromium"]
+pkgs = ["nodejs_22", "npm"]
 
 nixpkgsVersion = "unstable"
 

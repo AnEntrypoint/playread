@@ -8,34 +8,13 @@ class PlaywrightMCPClient {
   }
 
   async connect() {
-    const { execSync } = require('child_process');
-    const fs = require('fs');
     const args = ['-y', '@playwright/mcp@latest', '--no-sandbox'];
     const env = { ...process.env };
 
-    let chromiumPath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || process.env.CHROMIUM_BIN;
-
-    if (!chromiumPath && fs.existsSync('.chromium-path')) {
-      try {
-        const content = fs.readFileSync('.chromium-path', 'utf8');
-        const match = content.match(/PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=(.+)/);
-        if (match) chromiumPath = match[1].trim();
-      } catch (e) {}
-    }
-
-    if (!chromiumPath) {
-      try {
-        chromiumPath = execSync('which chromium || which chromium-browser || which google-chrome || which google-chrome-stable', { encoding: 'utf8' }).trim();
-      } catch (e) {
-        console.error('Could not find chromium executable:', e.message);
-      }
-    }
-
+    const chromiumPath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || process.env.CHROMIUM_BIN;
     if (chromiumPath) {
       env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH = chromiumPath;
       args.push('--executable-path', chromiumPath);
-    } else {
-      throw new Error('Chromium executable not found. Set PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH or CHROMIUM_BIN');
     }
 
     this.transport = new StdioClientTransport({
