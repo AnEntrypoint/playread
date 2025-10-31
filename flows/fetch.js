@@ -143,11 +143,28 @@ module.exports = async function(client, url) {
   try {
     data = JSON.parse(response);
   } catch (e) {
-    const jsonMatch = response.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      throw new Error(`Failed to extract JSON from: ${response}`);
+    const lines = response.split('\n');
+    let jsonStr = '';
+    let inJson = false;
+    for (const line of lines) {
+      if (line.trim().startsWith('{')) {
+        inJson = true;
+      }
+      if (inJson) {
+        jsonStr += line + '\n';
+        if (line.trim().endsWith('}')) {
+          break;
+        }
+      }
     }
-    data = JSON.parse(jsonMatch[0]);
+    if (!jsonStr.trim()) {
+      throw new Error(`No JSON found in response: ${response.substring(0, 200)}`);
+    }
+    try {
+      data = JSON.parse(jsonStr);
+    } catch (parseErr) {
+      throw new Error(`Failed to parse JSON: ${parseErr.message}`);
+    }
   }
 
   await client.close();
