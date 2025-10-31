@@ -2,7 +2,7 @@
 cmd = "npm install"
 
 [start]
-cmd = "npm run http"
+cmd = "./setup-chromium.sh npm run http"
 
 [nix]
 pkgs = ["nodejs_22", "npm", "chromium"]

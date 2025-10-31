@@ -16,8 +16,10 @@ class PlaywrightMCPClient {
 
     if (!chromiumPath) {
       try {
-        chromiumPath = execSync('which chromium || which chromium-browser', { encoding: 'utf8' }).trim();
-      } catch (e) {}
+        chromiumPath = execSync('which chromium || which chromium-browser || which google-chrome || which google-chrome-stable', { encoding: 'utf8' }).trim();
+      } catch (e) {
+        console.error('Could not find chromium executable:', e.message);
+      }
     }
 
     if (chromiumPath) {
