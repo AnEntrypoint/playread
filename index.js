@@ -8,7 +8,9 @@ class PlaywrightMCPClient {
   }
 
   async connect() {
-    const args = ['-y', '@playwright/mcp@latest', '--browser', 'chromium', '--no-sandbox'];
+    const path = require('path');
+    const playwrightMcpPath = path.join(require.resolve('@playwright/mcp'), '..', 'cli.js');
+    const args = ['--browser', 'chromium', '--no-sandbox'];
     const env = { ...process.env };
 
     const chromiumPath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || process.env.CHROMIUM_BIN;
@@ -18,8 +20,8 @@ class PlaywrightMCPClient {
     }
 
     this.transport = new StdioClientTransport({
-      command: 'npx',
-      args,
+      command: 'node',
+      args: [playwrightMcpPath, ...args],
       stderr: 'inherit',
       env
     });
