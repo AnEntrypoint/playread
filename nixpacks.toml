@@ -5,25 +5,10 @@ cmd = "npm install"
 cmd = "npm run http"
 
 [nix]
-pkgs = [
-  "nodejs_22",
-  "npm",
-  "chromium",
-  "libxkbcommon",
-  "libxss",
-  "libappindicator-gtk3",
-  "libgconf-2-4",
-  "libnotify",
-  "libnss3",
-  "libgbm",
-  "libdrm",
-  "mesa"
-]
+pkgs = ["nodejs_22", "npm", "chromium"]
 
 nixpkgsVersion = "unstable"
 
 [env]
 PORT = "3000"
 PLAYWRIGHT_HEADLESS = "true"
-CHROMIUM_BIN = "/run/current-system/sw/bin/chromium"
-PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH = "/run/current-system/sw/bin/chromium"
