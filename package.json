@@ -1,6 +1,6 @@
 {
   "name": "playread",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "Web content extraction and automation via Playwright MCP",
   "main": "index.js",
   "type": "commonjs",
