@@ -143,7 +143,11 @@ module.exports = async function(client, url) {
   try {
     data = JSON.parse(response);
   } catch (e) {
-    throw new Error(`Failed to parse evaluation result: ${response}`);
+    const jsonMatch = response.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error(`Failed to extract JSON from: ${response}`);
+    }
+    data = JSON.parse(jsonMatch[0]);
   }
 
   await client.close();
